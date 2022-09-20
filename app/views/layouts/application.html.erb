@@ -14,5 +14,11 @@
         <h3><b><%= notice %></b></h3>
       <% end %>
     <%= yield %>
+
+    <footer style="margin-top: 12px; padding-top: 12px; border-top: 1px solid #ccc;">
+      &copy; Little Esty Shop
+      <br />
+      <%= link_to @github_details[:repo_name], @github_details[:repo_url], target: '_blank' %>
+    </footer>
   </body>
 </html>
