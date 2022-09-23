@@ -23,7 +23,6 @@ RSpec.describe 'Merchant Invoice Show' do
 
     it 'shows information related to that invoice including id, status, and created_at' do
       visit "/merchants/#{@merchant_1.id}/invoices/#{@invoice_1.id}"
-
       expect(page).to have_content("Invoice ID: #{@invoice_1.id}")
       expect(page).to have_content("completed")
       expect(page).to have_content("Invoice created at: Friday, September, 16, 2022")
@@ -41,19 +40,28 @@ RSpec.describe 'Merchant Invoice Show' do
 
     it "total revenue that will be generated from all of items on invoice" do
       visit "/merchants/#{@merchant_1.id}/invoices/#{@invoice_1.id}"
-
       expect(page).to have_content("Total Revenue: 3400")
     end
 
     it "updates item status" do
       visit "/merchants/#{@merchant_1.id}/invoices/#{@invoice_1.id}"
-
-            expect(page).to have_select('status', selected: "pending")
-
-            select('shipped', from: 'status')
-            click_on 'Update Item Status'
-
-            expect(page).to have_select('status', selected: "shipped")
-    
+      expect(page).to have_select('status', selected: "pending")
+      select('shipped', from: 'status')
+      click_on 'Update Item Status'
+      expect(page).to have_select('status', selected: "shipped")
     end
+
+    xit 'can show total revenue without discounts' do 
+      # When I visit my merchant invoice show page
+      visit merchant_invoice_path(@merchant_1, @invoice_1)
+      # Then I see the total revenue for my merchant from this invoice (not including discounts)
+      expect(page).to have_content("Total Revenue without bulk discounts:")
+      expect(page).to have_content(@invoice_1.total_revenue)
+    end
+    
+    xit 'can show revenue with discounts' do 
+      visit merchant_invoice_path(@merchant_1, @invoice_1)
+      # And I see the total discounted revenue for my merchant from this invoice which includes bulk discounts in the calculation
+      expect(page).to have_content("Total Revenue with bulk discounts:")
+    end 
 end
