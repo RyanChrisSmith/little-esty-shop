@@ -22,7 +22,7 @@ RSpec.describe 'delete a discount' do
       # Then I am redirected back to the bulk discounts index page
     end 
     # And I no longer see the discount listed
-    expect(page).to_not have_content("Percentage Discount: 5%")
-    expect(page).to_not have_content("Quantity Threshold: 10 items")
+    expect(page).to_not have_content("Percentage Discount: #{@discount_1.percentage_discount}%")
+    expect(page).to_not have_content("Quantity Threshold: #{@discount_1.quantity} items")
   end 
 end 
