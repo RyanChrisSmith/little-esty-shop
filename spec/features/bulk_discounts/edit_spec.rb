@@ -23,7 +23,8 @@ RSpec.describe 'Merchant Bulk Discount show page' do
   it 'has a form to edit with prepoluated fields' do 
     visit edit_merchant_bulk_discount_path(@merchant_1, @discount_1)
     # And I see that the discounts current attributes are pre-poluated in the form
-
+    expect(page).to have_field("Percentage Discount", with: 5)
+    expect(page).to have_field("Quantity Threshold", with: 10)
     # When I change any/all of the information and click submit
     fill_in 'Percentage Discount', with: 35
     fill_in 'Quantity Threshold', with: 50
