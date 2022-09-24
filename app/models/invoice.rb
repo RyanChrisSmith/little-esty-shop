@@ -19,5 +19,7 @@ class Invoice < ApplicationRecord
     .group('invoice_items.id').sum(&:total_discount)
   end
 
-
+  def net_revenue
+    total_revenue - discounted_revenue
+  end
 end
