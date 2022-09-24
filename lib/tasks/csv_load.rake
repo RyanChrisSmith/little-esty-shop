@@ -64,6 +64,7 @@ namespace :csv_load do
   end
 
   task delete_all: :environment do
+    BulkDiscount.destroy_all
     InvoiceItem.destroy_all
     Item.destroy_all
     Merchant.destroy_all
