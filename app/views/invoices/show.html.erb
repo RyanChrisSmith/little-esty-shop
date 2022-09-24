@@ -19,4 +19,4 @@
 
 
 <h3> Total Revenue without bulk discounts: <%= number_to_currency(@invoice.total_revenue.to_f/100) %></h3>
-<h3> Total Revenue with bulk discounts: <%= number_to_currency(@invoice.discounted_revenue.to_f/100) %></h3>
+<h3> Total Revenue with bulk discounts: <%= number_to_currency(@invoice.net_revenue.to_f/100) %></h3>
