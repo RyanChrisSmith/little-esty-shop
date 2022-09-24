@@ -14,4 +14,8 @@ class InvoiceItem < ApplicationRecord
     Invoice.order(created_at: :asc).find(inv_ids)
   end
 
+  def applied_discounts
+    bulk_discounts.where('bulk_discounts.quantity <= ?', quantity)
+    .order(percentage_discount: :desc).first
+  end
 end

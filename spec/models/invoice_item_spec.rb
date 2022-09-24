@@ -43,6 +43,27 @@ RSpec.describe InvoiceItem, type: :model do
     it 'displays the incomplete invoices in ascending order' do
       expect(InvoiceItem.incomplete_invoices.first).to eq(@invoice_1)
     end
+  end
 
+  describe '#applied discounts' do
+    it 'will show which discounts were used if any' do
+      @merchant_1 = Merchant.create!(name: "Bread Pitt")
+      @merchant_2 = Merchant.create!(name: "Carrie Breadshaw")
+      @item_1 = Item.create!(name: "Sourdough", description: "leavened, wild yeast", unit_price: 400, merchant_id: @merchant_1.id)
+      @item_2 = Item.create!(name: "Baguette", description: "Soft, french", unit_price: 100, merchant_id: @merchant_1.id)
+      @item_4 = Item.create!(name: "Bread Roll", description: "Round, soft", unit_price: 100, merchant_id: @merchant_2.id, status: 1)
+      @customer_1 = Customer.create!(first_name: "Meat", last_name: "Loaf")
+      @invoice_1 = Invoice.create!(status: 2, customer_id: @customer_1.id, created_at: Time.parse("Friday, September, 16, 2022"))
+      @invoice_item_1 = InvoiceItem.create!(quantity: 12, unit_price: 100, status: 2, item_id: @item_1.id, invoice_id: @invoice_1.id)
+      @invoice_item_2 = InvoiceItem.create!(quantity: 15, unit_price: 100, status: 1, item_id: @item_2.id, invoice_id: @invoice_1.id)
+      @invoice_item_3 = InvoiceItem.create!(quantity: 5, unit_price: 100, status: 2, item_id: @item_4.id, invoice_id: @invoice_1.id)
+      @discount_a = BulkDiscount.create!(percentage_discount: 20, quantity: 10, merchant_id: @merchant_1.id)
+      @discount_b = BulkDiscount.create!(percentage_discount: 30, quantity: 15, merchant_id: @merchant_1.id)
+      @discount_c = BulkDiscount.create!(percentage_discount: 30, quantity: 15, merchant_id: @merchant_2.id)
+
+      expect(@invoice_item_1.applied_discounts).to eq(@discount_a)
+      expect(@invoice_item_2.applied_discounts).to eq(@discount_b)
+      expect(@invoice_item_3.applied_discounts).to_not eq(@discount_c)
+    end
   end
 end

@@ -88,5 +88,23 @@ RSpec.describe 'Merchant Invoice Show' do
       # And I see the total discounted revenue for my merchant from this invoice which includes bulk discounts in the calculation
       expect(page).to have_content("Total Revenue with bulk discounts: $35.10")
     end
+
+    it 'will have a link to show page for the bulk discounts that was applied' do
+      @merchant_1 = Merchant.create!(name: "Bread Pitt")
+      @merchant_2 = Merchant.create!(name: "Carrie Breadshaw")
+      @item_1 = Item.create!(name: "Sourdough", description: "leavened, wild yeast", unit_price: 400, merchant_id: @merchant_1.id)
+      @item_2 = Item.create!(name: "Baguette", description: "Soft, french", unit_price: 100, merchant_id: @merchant_1.id)
+      @item_4 = Item.create!(name: "Bread Roll", description: "Round, soft", unit_price: 100, merchant_id: @merchant_2.id, status: 1)
+      @customer_1 = Customer.create!(first_name: "Meat", last_name: "Loaf")
+      @invoice_1 = Invoice.create!(status: 2, customer_id: @customer_1.id, created_at: Time.parse("Friday, September, 16, 2022"))
+      @invoice_item_1 = InvoiceItem.create!(quantity: 12, unit_price: 100, status: 2, item_id: @item_1.id, invoice_id: @invoice_1.id)
+      @invoice_item_2 = InvoiceItem.create!(quantity: 15, unit_price: 100, status: 1, item_id: @item_2.id, invoice_id: @invoice_1.id)
+      @invoice_item_3 = InvoiceItem.create!(quantity: 15, unit_price: 100, status: 2, item_id: @item_4.id, invoice_id: @invoice_1.id)
+      @discount_a = BulkDiscount.create!(percentage_discount: 20, quantity: 10, merchant_id: @merchant_1.id)
+      @discount_b = BulkDiscount.create!(percentage_discount: 30, quantity: 15, merchant_id: @merchant_1.id)
+      # When I visit my merchant invoice show page
+      visit merchant_invoice_path(@merchant_1, @invoice_1)
+      # Next to each invoice item I see a link to the show page for the bulk discount that was applied (if any)
+    end
   end
 end
