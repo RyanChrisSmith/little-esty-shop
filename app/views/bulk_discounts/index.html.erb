@@ -13,3 +13,8 @@
     </li>
   </div>
 <% end %>
+
+<h3>Upcoming Holidays</h3>
+<% @holidays.each do |holiday| %>
+  <p><strong><%= holiday.name %> - <%= holiday.date %></strong></p>
+  <% end %>
