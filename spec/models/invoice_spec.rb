@@ -24,20 +24,22 @@ RSpec.describe Invoice, type: :model do
     expect(@invoice_4.total_revenue).to eq(3840)
   end
 
-  it 'will not apply any discounts when attributes of discount have not been met' do
-    @merchant_1 = Merchant.create!(name: "Bread Pitt")
-    @item_2 = Item.create!(name: "Baguette", description: "Soft, french", unit_price: 100, merchant_id: @merchant_1.id)
-    @item_4 = Item.create!(name: "Bread Roll", description: "Round, soft", unit_price: 100, merchant_id: @merchant_1.id, status: 1)
-    @customer_1 = Customer.create!(first_name: "Meat", last_name: "Loaf")
-    @invoice_1 = Invoice.create!(status: 2, customer_id: @customer_1.id, created_at: Time.parse("Friday, September, 16, 2022"))
-    @invoice_item_1 = InvoiceItem.create!(quantity: 5, unit_price: 100, status: 2, item_id: @item_2.id, invoice_id: @invoice_2.id)
-    @invoice_item_2 = InvoiceItem.create!(quantity: 5, unit_price: 100, status: 1, item_id: @item_4.id, invoice_id: @invoice_2.id)
+  describe '#discounted_revenue' do
+    it 'will not apply any discounts when attributes of discount have not been met' do
+      @merchant_1 = Merchant.create!(name: "Bread Pitt")
+      @item_2 = Item.create!(name: "Baguette", description: "Soft, french", unit_price: 100, merchant_id: @merchant_1.id)
+      @item_4 = Item.create!(name: "Bread Roll", description: "Round, soft", unit_price: 100, merchant_id: @merchant_1.id, status: 1)
+      @customer_1 = Customer.create!(first_name: "Meat", last_name: "Loaf")
+      @invoice_1 = Invoice.create!(status: 2, customer_id: @customer_1.id, created_at: Time.parse("Friday, September, 16, 2022"))
+      @invoice_item_1 = InvoiceItem.create!(quantity: 5, unit_price: 100, status: 2, item_id: @item_2.id, invoice_id: @invoice_1.id)
+      @invoice_item_2 = InvoiceItem.create!(quantity: 5, unit_price: 100, status: 1, item_id: @item_4.id, invoice_id: @invoice_1.id)
 
-    @discount = BulkDiscount.create!(percentage_discount: 10, quantity: 10, merchant_id: @merchant_1.id)
+      @discount = BulkDiscount.create!(percentage_discount: 10, quantity: 10, merchant_id: @merchant_1.id)
 
-    expect(@invoice_1.discounted_revenue).to eq 0
+      expect(@invoice_1.discounted_revenue).to eq 0
+    end
+
   end
-
 
 
 end
