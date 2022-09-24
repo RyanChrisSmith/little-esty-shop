@@ -11,12 +11,15 @@
 
 <h2> Items on invoice: </h2>
 <% @invoice.invoice_items.each do |invoice_item| %>
-<p>Item name: <%= invoice_item.item.name %></p>
+<div id="invoice_item-<%= invoice_item.id%>">
+<p>Item name: <%= invoice_item.item.name %><% if invoice_item.applied_discount %>
+    <%= link_to "Bulk Discount Applied", merchant_bulk_discount_path(@merchant, invoice_item.applied_discount.id) %><% end %></p>
 <p>Quantity: <%= invoice_item.quantity %></p>
-<p>Sold at: <%= invoice_item.unit_price %></p>
-<p>Status: <%= invoice_item.status %></p>
+<p>Sold at: <%= number_to_currency(invoice_item.unit_price.to_f/100) %></p>
+<p>Status: <%= invoice_item.status %></p></div>
 <% end %>
 
 
 <h3> Total Revenue without bulk discounts: <%= number_to_currency(@invoice.total_revenue.to_f/100) %></h3>
+<h3> Discounted amount from bulk discounts: <%= number_to_currency(@invoice.discounted_revenue.to_f/100) %></h3>
 <h3> Total Revenue with bulk discounts: <%= number_to_currency(@invoice.net_revenue.to_f/100) %></h3>
