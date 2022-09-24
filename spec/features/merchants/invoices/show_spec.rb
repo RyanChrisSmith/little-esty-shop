@@ -21,47 +21,47 @@ RSpec.describe 'Merchant Invoice Show' do
     @invoice_item_3 = InvoiceItem.create!(quantity: 3, unit_price: 999, status: 2, item_id: @item_3.id, invoice_id: @invoice_3.id)
   end
 
-    it 'shows information related to that invoice including id, status, and created_at' do
-      visit "/merchants/#{@merchant_1.id}/invoices/#{@invoice_1.id}"
-      expect(page).to have_content("Invoice ID: #{@invoice_1.id}")
-      expect(page).to have_content("completed")
-      expect(page).to have_content("Invoice created at: Friday, September, 16, 2022")
-      expect(page).to have_content("Meat Loaf")
-    end
+  it 'shows information related to that invoice including id, status, and created_at' do
+    visit "/merchants/#{@merchant_1.id}/invoices/#{@invoice_1.id}"
+    expect(page).to have_content("Invoice ID: #{@invoice_1.id}")
+    expect(page).to have_content("completed")
+    expect(page).to have_content("Invoice created at: Friday, September, 16, 2022")
+    expect(page).to have_content("Meat Loaf")
+  end
 
-    it "shows all my items on the invoice including item name, quantity ordered, price item sold for, and invoice item status" do
-      visit "/merchants/#{@merchant_1.id}/invoices/#{@invoice_1.id}"
-      expect(page).to have_content("Items on invoice:")
-      expect(page).to have_content("Item name: Sourdough")
-      expect(page).to have_content("Quantity: 4")
-      expect(page).to have_content("Sold at: 850")
-      expect(page).to have_content("Status: pending")
-    end
+  it "shows all my items on the invoice including item name, quantity ordered, price item sold for, and invoice item status" do
+    visit "/merchants/#{@merchant_1.id}/invoices/#{@invoice_1.id}"
+    expect(page).to have_content("Items on invoice:")
+    expect(page).to have_content("Item name: Sourdough")
+    expect(page).to have_content("Quantity: 4")
+    expect(page).to have_content("Sold at: 850")
+    expect(page).to have_content("Status: pending")
+  end
 
-    it "total revenue that will be generated from all of items on invoice" do
-      visit "/merchants/#{@merchant_1.id}/invoices/#{@invoice_1.id}"
-      expect(page).to have_content("Total Revenue: 3400")
-    end
+  it "total revenue that will be generated from all of items on invoice" do
+    visit "/merchants/#{@merchant_1.id}/invoices/#{@invoice_1.id}"
+    expect(page).to have_content("Total Revenue without bulk discounts: $34.00")
+  end
 
-    it "updates item status" do
-      visit "/merchants/#{@merchant_1.id}/invoices/#{@invoice_1.id}"
-      expect(page).to have_select('status', selected: "pending")
-      select('shipped', from: 'status')
-      click_on 'Update Item Status'
-      expect(page).to have_select('status', selected: "shipped")
-    end
+  it "updates item status" do
+    visit "/merchants/#{@merchant_1.id}/invoices/#{@invoice_1.id}"
+    expect(page).to have_select('status', selected: "pending")
+    select('shipped', from: 'status')
+    click_on 'Update Item Status'
+    expect(page).to have_select('status', selected: "shipped")
+  end
 
-    xit 'can show total revenue without discounts' do 
-      # When I visit my merchant invoice show page
-      visit merchant_invoice_path(@merchant_1, @invoice_1)
-      # Then I see the total revenue for my merchant from this invoice (not including discounts)
-      expect(page).to have_content("Total Revenue without bulk discounts:")
-      expect(page).to have_content(@invoice_1.total_revenue)
-    end
-    
-    xit 'can show revenue with discounts' do 
-      visit merchant_invoice_path(@merchant_1, @invoice_1)
-      # And I see the total discounted revenue for my merchant from this invoice which includes bulk discounts in the calculation
-      expect(page).to have_content("Total Revenue with bulk discounts:")
-    end 
+  it 'can show total revenue without discounts' do
+    # When I visit my merchant invoice show page
+    visit merchant_invoice_path(@merchant_1, @invoice_1)
+
+    # Then I see the total revenue for my merchant from this invoice (not including discounts)
+    expect(page).to have_content("Total Revenue without bulk discounts: $34.00")
+  end
+
+  xit 'can show revenue with discounts' do
+    visit merchant_invoice_path(@merchant_1, @invoice_1)
+    # And I see the total discounted revenue for my merchant from this invoice which includes bulk discounts in the calculation
+    expect(page).to have_content("Total Revenue with bulk discounts:")
+  end
 end
