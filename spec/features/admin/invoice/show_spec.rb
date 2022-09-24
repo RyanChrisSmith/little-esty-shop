@@ -39,7 +39,7 @@ RSpec.describe 'admin invoice show page' do
       expect(page).to_not have_content("Item name: Baguette")
 
       expect(page).to have_content("Quantity ordered: 4")
-      expect(page).to have_content("Price sold for: $850.00")
+      expect(page).to have_content("Price sold for: $8.50")
       expect(page).to have_content("Invoice Item status: pending")
     end
   end
@@ -52,7 +52,7 @@ RSpec.describe 'admin invoice show page' do
 
       visit "/admin/invoices/#{@invoice_1.id}"
 
-      expect(page).to have_content("Total Revenue: $7,240.00")
+      expect(page).to have_content("Total Revenue: $72.40")
     end
   end
 
@@ -66,6 +66,46 @@ RSpec.describe 'admin invoice show page' do
       click_on 'Update Invoice Status'
 
       expect(page).to have_select('status', selected: "cancelled")
+    end
+  end
+
+  describe 'total revenue and discounted revenue' do
+    it 'can show total revenue without discounts' do
+      @merchant_1 = Merchant.create!(name: "Bread Pitt")
+      @merchant_2 = Merchant.create!(name: "Carrie Breadshaw")
+      @item_1 = Item.create!(name: "Sourdough", description: "leavened, wild yeast", unit_price: 400, merchant_id: @merchant_1.id)
+      @item_2 = Item.create!(name: "Baguette", description: "Soft, french", unit_price: 100, merchant_id: @merchant_1.id)
+      @item_4 = Item.create!(name: "Bread Roll", description: "Round, soft", unit_price: 100, merchant_id: @merchant_2.id, status: 1)
+      @customer_1 = Customer.create!(first_name: "Meat", last_name: "Loaf")
+      @invoice_1 = Invoice.create!(status: 2, customer_id: @customer_1.id, created_at: Time.parse("Friday, September, 16, 2022"))
+      @invoice_item_1 = InvoiceItem.create!(quantity: 12, unit_price: 100, status: 2, item_id: @item_1.id, invoice_id: @invoice_1.id)
+      @invoice_item_2 = InvoiceItem.create!(quantity: 15, unit_price: 100, status: 1, item_id: @item_2.id, invoice_id: @invoice_1.id)
+      @invoice_item_3 = InvoiceItem.create!(quantity: 15, unit_price: 100, status: 2, item_id: @item_4.id, invoice_id: @invoice_1.id)
+      @discount_a = BulkDiscount.create!(percentage_discount: 20, quantity: 10, merchant_id: @merchant_1.id)
+      @discount_b = BulkDiscount.create!(percentage_discount: 30, quantity: 15, merchant_id: @merchant_1.id)
+      # When I visit an admin invoice show page
+      visit admin_invoice_path(@invoice_1)
+      # Then I see the total revenue from this invoice (not including discounts)
+      expect(page).to have_content("Total Revenue without bulk discounts: $42.00")
+    end
+
+    it 'can show revenue with discounts' do
+      @merchant_1 = Merchant.create!(name: "Bread Pitt")
+      @merchant_2 = Merchant.create!(name: "Carrie Breadshaw")
+      @item_1 = Item.create!(name: "Sourdough", description: "leavened, wild yeast", unit_price: 400, merchant_id: @merchant_1.id)
+      @item_2 = Item.create!(name: "Baguette", description: "Soft, french", unit_price: 100, merchant_id: @merchant_1.id)
+      @item_4 = Item.create!(name: "Bread Roll", description: "Round, soft", unit_price: 100, merchant_id: @merchant_2.id, status: 1)
+      @customer_1 = Customer.create!(first_name: "Meat", last_name: "Loaf")
+      @invoice_1 = Invoice.create!(status: 2, customer_id: @customer_1.id, created_at: Time.parse("Friday, September, 16, 2022"))
+      @invoice_item_1 = InvoiceItem.create!(quantity: 12, unit_price: 100, status: 2, item_id: @item_1.id, invoice_id: @invoice_1.id)
+      @invoice_item_2 = InvoiceItem.create!(quantity: 15, unit_price: 100, status: 1, item_id: @item_2.id, invoice_id: @invoice_1.id)
+      @invoice_item_3 = InvoiceItem.create!(quantity: 15, unit_price: 100, status: 2, item_id: @item_4.id, invoice_id: @invoice_1.id)
+      @discount_a = BulkDiscount.create!(percentage_discount: 20, quantity: 10, merchant_id: @merchant_1.id)
+      @discount_b = BulkDiscount.create!(percentage_discount: 30, quantity: 15, merchant_id: @merchant_1.id)
+
+      visit admin_invoice_path(@invoice_1)
+      # And I see the total discounted revenue for my merchant from this invoice which includes bulk discounts in the calculation
+      expect(page).to have_content("Total Revenue with bulk discounts: $35.10")
     end
   end
 end

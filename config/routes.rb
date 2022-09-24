@@ -33,5 +33,9 @@ Rails.application.routes.draw do
     resources :bulk_discounts
   end
 
+  namespace :admin do
+    resources :invoices, only: [:show]
+  end
+
   get "/merchants/:id/dashboard", to: 'merchant_dashboard#dashboard'
 end
