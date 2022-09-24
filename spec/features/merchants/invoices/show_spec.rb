@@ -34,7 +34,7 @@ RSpec.describe 'Merchant Invoice Show' do
     expect(page).to have_content("Items on invoice:")
     expect(page).to have_content("Item name: Sourdough")
     expect(page).to have_content("Quantity: 4")
-    expect(page).to have_content("Sold at: 850")
+    expect(page).to have_content("Sold at: $8.50")
     expect(page).to have_content("Status: pending")
   end
 
@@ -105,6 +105,12 @@ RSpec.describe 'Merchant Invoice Show' do
       # When I visit my merchant invoice show page
       visit merchant_invoice_path(@merchant_1, @invoice_1)
       # Next to each invoice item I see a link to the show page for the bulk discount that was applied (if any)
+      within "#invoice_item-#{@invoice_item_1.id}" do
+        expect(page).to have_link("Bulk Discount Applied")
+        click_link("Bulk Discount Applied")
+
+        expect(current_path).to eq(merchant_bulk_discount_path(@merchant_1, @discount_a))
+      end
     end
   end
 end
