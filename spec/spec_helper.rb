@@ -109,5 +109,9 @@ RSpec.configure do |config|
     github_api_pull_request_response = File.read(Rails.root.join('spec', 'fixtures', 'pull_request.json'))
     stub_request(:get, "https://api.github.com/repos/RyanChrisSmith/little-esty-shop/pulls?state=closed").
       to_return(body: github_api_pull_request_response)
+
+    nager_api_next_holiday_request = File.read(Rails.root.join('spec', 'fixtures', 'holidays.json'))
+    stub_request(:get, "https://date.nager.at/api/v3/NextPublicHolidays/US").
+    to_return(body: nager_api_next_holiday_request)
   end
 end
