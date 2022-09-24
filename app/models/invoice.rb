@@ -19,4 +19,5 @@ class Invoice < ApplicationRecord
     .group('invoice_items.id').sum(&:total_discount)
   end
 
+
 end
