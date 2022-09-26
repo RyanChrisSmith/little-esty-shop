@@ -1,3 +1,6 @@
+https://app.dbdesigner.net/designer/schema/555577
+
+
 # Bulk Discounts
 This project is an extension of the Little Esty Shop group project. You will add functionality for merchants to create bulk discounts for their items. A "bulk discount" is a discount based on the quantity of items the customer is buying, for example "20% off orders of 10 or more items".
 
