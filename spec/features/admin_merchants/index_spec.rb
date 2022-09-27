@@ -209,8 +209,8 @@ RSpec.describe 'Admin Merchants Index' do
       visit "/admin/merchants"
 
       within("#top_merchant-#{@merchant_5.id}") do
-        expect(page).to have_content("$13,000.00")
-        expect(page).to_not have_content("$7,200.00")#Sheena Yeaston revenue
+        expect(page).to have_content("$130.00")
+        expect(page).to_not have_content("$72.00")#Sheena Yeaston revenue
         # And I see the total revenue generated next to each merchant name
       end
     end
