@@ -45,7 +45,10 @@ group :development, :test do
   gem 'orderly'
   gem 'pry'
   gem 'rspec-rails', '~> 4.0.1'
-  gem "webmock"
+end
+
+group :test do
+  gem 'webmock'
 end
 
 group :development do

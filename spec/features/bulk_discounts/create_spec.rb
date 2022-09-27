@@ -1,11 +1,11 @@
 require 'rails_helper'
 
-RSpec.describe 'New Bulk Discounts page' do 
-  before :each do 
+RSpec.describe 'New Bulk Discounts page' do
+  before :each do
     @merchant_1 = Merchant.create!(name: "Bread Pitt")
-  end 
+  end
 
-  it 'will have a form to fill in' do 
+  it 'will have a form to fill in' do
     visit new_merchant_bulk_discount_path(@merchant_1)
     # When I fill in the form with valid data
     fill_in "Percentage Discount", with: 30
@@ -19,5 +19,5 @@ RSpec.describe 'New Bulk Discounts page' do
     expect(page).to have_content("Quantity Threshold: 25 items")
     expect(page).to_not have_content("Percentage Discount: 25%")
     expect(page).to_not have_content("Quantity Threshold: 30 items")
-  end 
-end 
+  end
+end

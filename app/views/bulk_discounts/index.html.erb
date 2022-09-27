@@ -17,4 +17,5 @@
 <h3>Upcoming Holidays</h3>
 <% @holidays.each do |holiday| %>
   <p><strong><%= holiday.name %> - <%= holiday.date %></strong></p>
+  <%= button_to "Create #{holiday.name} Discount",  %>
   <% end %>
